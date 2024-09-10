@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="EntitiesDto\ResponseDto\" />
+    <Folder Include="EntitiesDto\RequestDto\" />
+  </ItemGroup>
+
 </Project>
