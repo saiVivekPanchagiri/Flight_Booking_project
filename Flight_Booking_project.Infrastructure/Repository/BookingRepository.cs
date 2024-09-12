@@ -32,13 +32,6 @@ namespace FlightBookingSystem.Infrastructure
             return booking;
         }
 
-        public async Task<Seat> AddSeatAsync(Seat seat)
-        {
-            await _context.Seats.AddAsync(seat);
-            await _context.SaveChangesAsync();
-            return seat;
-        }
-
         public async Task<Passenger> AddPassengerAsync(Passenger passenger)
         {
             await _context.Passengers.AddAsync(passenger);
