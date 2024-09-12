@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Flight_Booking_project.Infrastructure.Data
 {
-    public class FlightBookingContext:DbContext
+    public class FlightBookingContext : DbContext
     {
         public FlightBookingContext(DbContextOptions<FlightBookingContext> options) : base(options) { }
         public DbSet<Airport> Airports { get; set; }
@@ -78,8 +78,6 @@ namespace Flight_Booking_project.Infrastructure.Data
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(b => b.UserId);
 
-
         }
-
     } 
 }
