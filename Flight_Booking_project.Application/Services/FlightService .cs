@@ -28,16 +28,16 @@ namespace Flight_Booking_project.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<List<FlightResponseDto>> SearchFlightsAsync(FlightBasicSearchRequestDto searchRequest)
+        public async Task<List<FlightResponseDto>> SearchFlightsAsync(string DepartureAirportName, string ArrivalAirportName, string ClassType, DateTime DepartureDate, int NumberOfPassengers)
         {
-            if (string.IsNullOrEmpty(searchRequest.DepartureAirportName) || string.IsNullOrEmpty(searchRequest.ArrivalAirportName))
+            if (string.IsNullOrEmpty(DepartureAirportName) || string.IsNullOrEmpty(ArrivalAirportName))
             {
                 throw new Exception("Both Departure and Arrival Airport Names are required.");
             }
 
             // Get the departure and arrival airports
-            var departureAirport = await _flightRepository.GetAirportByNameAsync(searchRequest.DepartureAirportName);
-            var arrivalAirport = await _flightRepository.GetAirportByNameAsync(searchRequest.ArrivalAirportName);
+            var departureAirport = await _flightRepository.GetAirportByNameAsync(DepartureAirportName);
+            var arrivalAirport = await _flightRepository.GetAirportByNameAsync(ArrivalAirportName);
 
 
 
@@ -47,18 +47,18 @@ namespace Flight_Booking_project.Application.Services
             }
             _cachedArrivalAirportId=arrivalAirport.AirportId;
             _cachedDepartureAirportId = departureAirport.AirportId;
-            _cachedClassType=searchRequest.ClassType;
-            _cacheddepatureDate = searchRequest.DepartureDate;
+            _cachedClassType=ClassType;
+            _cacheddepatureDate = DepartureDate;
 
 
             // Fetch flights based on the search criteria
-            var flights = await _flightRepository.SearchFlightsAsync(departureAirport.AirportId, arrivalAirport.AirportId, searchRequest);
+            var flights = await _flightRepository.SearchFlightsAsync(departureAirport.AirportId, arrivalAirport.AirportId,  DepartureAirportName, ArrivalAirportName, ClassType, DepartureDate,  NumberOfPassengers);
 
             var availableFlights = new List<Flight>();
             foreach (var flight in flights)
             {
                 var isAvailable = await _flightRepository.CheckSeatAvailabilityAsync(
-                    flight.FlightId, searchRequest.ClassType, searchRequest.NumberOfPassengers);
+                    flight.FlightId, ClassType, NumberOfPassengers);
 
                 if (isAvailable)
                 {
@@ -76,14 +76,14 @@ namespace Flight_Booking_project.Application.Services
             return flightDtos;
         }
 
-       public async Task<List<FlightResponseDto>> SearchFlightsByAdvanceFilterAsync(FlightAdvanceSearchRequestDto searchRequest)
+       public async Task<List<FlightResponseDto>> SearchFlightsByAdvanceFilterAsync(decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops)
         {
 
             if (_cachedDepartureAirportId == 0 || _cachedArrivalAirportId == 0 || string.IsNullOrEmpty(_cachedClassType) || _cacheddepatureDate == default(DateTime))
             {
                 throw new Exception("Basic search must be completed before applying advanced filters.");
             }
-            var flights = await _flightRepository.SearchFlightsByAdvanceFilterAsync(_cachedDepartureAirportId,_cachedArrivalAirportId,_cachedClassType,_cacheddepatureDate,searchRequest);
+            var flights = await _flightRepository.SearchFlightsByAdvanceFilterAsync(_cachedDepartureAirportId,_cachedArrivalAirportId,_cachedClassType,_cacheddepatureDate,  MinPrice,  MaxPrice,  AirlineName, NumberOfStops);
             if (flights == null || !flights.Any())
             {
                 throw new Exception("No flights found based on the search criteria.");

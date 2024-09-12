@@ -16,12 +16,12 @@ namespace Flight_Booking_project.Controllers
             _flightService = flightService;
         }
 
-        [HttpPost("Basicsearch")]
-        public async Task<IActionResult> SearchFlights([FromBody] FlightBasicSearchRequestDto searchRequest)
+        [HttpGet("Basicsearch")]
+        public async Task<IActionResult> SearchFlights([FromQuery] string DepartureAirportName, string ArrivalAirportName, string ClassType, DateTime DepartureDate, int NumberOfPassengers)
         {
             try
             {
-                var flights = await _flightService.SearchFlightsAsync(searchRequest);
+                var flights = await _flightService.SearchFlightsAsync(DepartureAirportName,ArrivalAirportName,ClassType,DepartureDate,NumberOfPassengers);
                 return Ok(flights);
             }
             catch (Exception ex)
@@ -29,12 +29,12 @@ namespace Flight_Booking_project.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-        [HttpPost("AdvanceFilterSearch")]
-        public async Task<IActionResult> SearchFlightsByAdvanceFilter([FromBody] FlightAdvanceSearchRequestDto searchRequest)
+        [HttpGet("AdvanceFilterSearch")]
+        public async Task<IActionResult> SearchFlightsByAdvanceFilter( [FromQuery]decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops)
         {
             try
             {
-                var flights = await _flightService.SearchFlightsByAdvanceFilterAsync(searchRequest);
+                var flights = await _flightService.SearchFlightsByAdvanceFilterAsync( MinPrice,  MaxPrice, AirlineName, NumberOfStops);
                 return Ok(flights);
             }
             catch (Exception ex)
