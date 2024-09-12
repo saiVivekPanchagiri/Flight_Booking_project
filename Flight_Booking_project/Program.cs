@@ -8,6 +8,7 @@ using FlightBookingSystem.Application.Repository;
 using FlightBookingSystem.Application.Services;
 using FlightBookingSystem.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
