@@ -19,14 +19,13 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    
 
-    public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper, IPasswordHasher<User> passwordHasher)
+    public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper )
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _mapper = mapper;
-        _passwordHasher = passwordHasher;
     }
 
     public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
@@ -38,42 +37,62 @@ public class UserService : IUserService
         }
 
         var user = _mapper.Map<User>(registerDto);
-        //user.Password = _passwordHasher.HashPassword(user, registerDto.Password);
+        
 
         await _userRepository.AddAsync(user);
 
         return _mapper.Map<UserDto>(user);
     }
 
-    public async Task<string> LoginAsync(string email, string password)
+    private async Task<UserDto> AuthenticateUser(UserDto user)
     {
-        var user = await _userRepository.GetByEmailAsync(email);
+        UserDto _user = null;
 
-        if (user == null || !VerifyPassword(user.Password, password))
+        try
         {
-            throw new UnauthorizedAccessException("Invalid credentials");
+            var userVal = await _userRepository.GetByEmailAsync(user.Email);
+
+            if (userVal != null && (user.Email == userVal.Email && user.Password == userVal.Password))
+            {
+                _user = user;
+            }
+        }
+        catch (Exception ex)
+        {
+            return _user;
         }
 
-        return GenerateToken(user);
+        return _user;
     }
 
-    private bool VerifyPassword(string storedPassword, string providedPassword)
-    {
-        // Implement password verification logic (e.g., hashing and comparing)
-        return storedPassword == providedPassword; // Simplified for demonstration
-    }
-
-    private string GenerateToken(User user)
+    private async Task<string> GenerateToken(UserDto user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], null,
-            expires: DateTime.Now.AddMinutes(1),
+            expires: DateTime.Now.AddMinutes(10),
             signingCredentials: credentials
             );
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    public async Task<string> LoginAsync(UserDto user)
+    {
+        var token = "";
+        try
+        {
+            var _user = await AuthenticateUser(user);
+            if (_user != null)
+            {
+                token = await GenerateToken(user);
+            }
+        }
+        catch (Exception e)
+        {
+            return token;
+        }
+        return token;
+    }
 }
 

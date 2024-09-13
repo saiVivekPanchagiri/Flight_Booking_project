@@ -13,10 +13,6 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-
 // Configure Entity Framework Core
 builder.Services.AddDbContext<FlightBookingContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EFCoreDBConnection"),
@@ -40,9 +36,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Register IPasswordHasher<User>
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-
 // Add application services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -50,6 +43,16 @@ builder.Services.AddScoped<IUserService, UserService>();
 // Add Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        builder => builder
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -62,7 +65,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();  // Ensure this is called before UseAuthorization
+app.UseCors("MyPolicy");
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllers();

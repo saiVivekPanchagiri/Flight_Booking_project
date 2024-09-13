@@ -11,6 +11,6 @@ namespace Flight_Booking_project.Application.Interfaces
     public interface IUserService
     {
         Task<UserDto> RegisterAsync(RegisterDto registerDto);
-        Task<string> LoginAsync(string email, string password);
+        Task<string> LoginAsync(UserDto userDto);
     }
 }

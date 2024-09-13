@@ -34,22 +34,22 @@ public class UserLoginController : ControllerBase
         }
     }
 
-    [HttpPost("login")]
+    [AllowAnonymous]
+    [HttpPost]
+    [Route("login")]
     public async Task<IActionResult> Login([FromBody] UserDto userDto)
     {
-        try
+        if (userDto == null)
         {
-            var token = await _userService.LoginAsync(userDto.Email, userDto.Password);
-            return Ok(new { Token = token });
+            return BadRequest("UserDto cannot be null.");
         }
-        catch (UnauthorizedAccessException ex)
+        var token = await _userService.LoginAsync(userDto);
+
+        if (!string.IsNullOrEmpty(token))
         {
-            return Unauthorized(new { Message = ex.Message });
+            return Ok(new { token });
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return Unauthorized("Invalid username or password.");
     }
 }
 
