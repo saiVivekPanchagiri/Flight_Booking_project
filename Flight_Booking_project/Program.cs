@@ -1,10 +1,14 @@
 using Flight_Booking_project.Application.Interfaces;
 using Flight_Booking_project.Application.IRepository;
 using Flight_Booking_project.Application.Services;
+using Flight_Booking_project.Domain.AutoMapper;
 using Flight_Booking_project.Domain.EntitiesDto;
 using Flight_Booking_project.Infrastructure.Data;
 using Flight_Booking_project.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,10 +64,6 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-app.UseCors("AllowSpecificOrigin");
-
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -73,7 +73,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("MyPolicy");
+app.UseCors("AllowSpecificOrigin");
+
 app.UseAuthentication();  
 app.UseAuthorization();
 
