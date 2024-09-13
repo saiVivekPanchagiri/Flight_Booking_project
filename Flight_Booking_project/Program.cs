@@ -17,6 +17,8 @@ builder.Services.AddDbContext<FlightBookingContext>(options => options.UseSqlSer
 builder.Services.AddAutoMapper(typeof(FlightProfile).Assembly);
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<IAirportService, AirportService>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 /*builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -25,8 +27,21 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 var app = builder.Build();
+
+app.UseCors("AllowSpecificOrigin");
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

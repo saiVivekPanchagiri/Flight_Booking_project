@@ -9,9 +9,9 @@ namespace Flight_Booking_project.Application.IRepository
         Task<Airport> GetAirportByNameAsync(string airportName);
 
         Task<bool> CheckSeatAvailabilityAsync(int flightId, string classType, int passengerCount);
-        Task<List<Flight>> SearchFlightsAsync(int departureAirportId, int arrivalAirportId, FlightBasicSearchRequestDto searchRequest);
+        Task<List<Flight>> SearchFlightsAsync(int departureAirportId, int arrivalAirportId, string DepartureAirportName, string ArrivalAirportName, string ClassType, DateTime DepartureDate, int NumberOfPassengers);
 
-        Task<List<Flight>> SearchFlightsByAdvanceFilterAsync(int departureAirportId,int arrivalAirportId,string classType,DateTime departureDate,FlightAdvanceSearchRequestDto searchRequest);
+        Task<List<Flight>> SearchFlightsByAdvanceFilterAsync(int departureAirportId,int arrivalAirportId,string classType,DateTime departureDate,decimal? MinPrice,decimal? MaxPrice,string? AirlineName,int? NumberOfStops);
 
 
     }

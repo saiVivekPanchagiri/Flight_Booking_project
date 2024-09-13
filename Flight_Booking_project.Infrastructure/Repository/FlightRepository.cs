@@ -38,7 +38,7 @@ namespace Flight_Booking_project.Infrastructure.Repository
 
         }
 
-        public async Task<List<Flight>> SearchFlightsAsync(int departureAirportId, int arrivalAirportId, FlightBasicSearchRequestDto searchRequest)
+        public async Task<List<Flight>> SearchFlightsAsync(int departureAirportId, int arrivalAirportId, string DepartureAirportName, string ArrivalAirportName, string ClassType, DateTime DepartureDate, int NumberOfPassengers)
         {
             var query = _context.Flights
                 .Include(f => f.DepartureAirport)
@@ -51,14 +51,14 @@ namespace Flight_Booking_project.Infrastructure.Repository
             query = query.Where(f => f.DepartureAirportId == departureAirportId && f.ArrivalAirportId == arrivalAirportId);
 
             // Filter by class type and availability of seat
-            if (!string.IsNullOrEmpty(searchRequest.ClassType))
+            if (!string.IsNullOrEmpty(ClassType))
             {
-                query = query.Where(f => f.Seats.Any(s => s.ClassType == searchRequest.ClassType && s.IsAvailable));
+                query = query.Where(f => f.Seats.Any(s => s.ClassType ==ClassType && s.IsAvailable));
             }
 
-            if (searchRequest.DepartureDate != null)
+            if (DepartureDate != null)
             {
-                query = query.Where(f => f.DepartureTime.Date == searchRequest.DepartureDate.Date);
+                query = query.Where(f => f.DepartureTime.Date == DepartureDate.Date);
             }
 
             return await query.ToListAsync();
@@ -76,7 +76,7 @@ namespace Flight_Booking_project.Infrastructure.Repository
             return availableSeats >= passengerCount;
         }
 
-        public async Task<List<Flight>> SearchFlightsByAdvanceFilterAsync(int departureAirportId, int arrivalAirportId, string classType, DateTime departureDate, FlightAdvanceSearchRequestDto AdvsearchRequest)
+        public async Task<List<Flight>> SearchFlightsByAdvanceFilterAsync(int departureAirportId, int arrivalAirportId, string classType, DateTime departureDate, decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops)
         {
             var query = _context.Flights
         .Include(f => f.Seats)
@@ -97,27 +97,27 @@ namespace Flight_Booking_project.Infrastructure.Repository
 
 
             // Filter by minimum price
-            if (AdvsearchRequest.MinPrice.HasValue)
+            if (MinPrice.HasValue)
             {
-                query = query.Where(f => f.Seats.Any(s => s.Price >= AdvsearchRequest.MinPrice.Value));
+                query = query.Where(f => f.Seats.Any(s => s.Price >= MinPrice.Value));
             }
 
             // Filter by maximum price
-            if (AdvsearchRequest.MaxPrice.HasValue)
+            if (MaxPrice.HasValue)
             {
-                query = query.Where(f => f.Seats.Any(s => s.Price <= AdvsearchRequest.MaxPrice.Value));
+                query = query.Where(f => f.Seats.Any(s => s.Price <= MaxPrice.Value));
             }
 
             // Filter by airline name
-            if (!string.IsNullOrEmpty(AdvsearchRequest.AirlineName))
+            if (!string.IsNullOrEmpty(AirlineName))
             {
-                query = query.Where(f => f.Airline.AirlineName.ToLower() == AdvsearchRequest.AirlineName.ToLower());
+                query = query.Where(f => f.Airline.AirlineName.ToLower() == AirlineName.ToLower());
             }
 
             // Filter by number of stops
-            if (AdvsearchRequest.NumberOfStops.HasValue)
+            if (NumberOfStops.HasValue)
             {
-                query = query.Where(f => f.Stops.Count == AdvsearchRequest.NumberOfStops.Value);
+                query = query.Where(f => f.Stops.Count == NumberOfStops.Value);
             }
             
 
