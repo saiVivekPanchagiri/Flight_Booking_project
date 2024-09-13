@@ -76,7 +76,7 @@ namespace Flight_Booking_project.Infrastructure.Repository
             return availableSeats >= passengerCount;
         }
 
-        public async Task<List<Flight>> SearchFlightsByAdvanceFilterAsync(int departureAirportId, int arrivalAirportId, string classType, DateTime departureDate, decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops)
+       /* public async Task<List<Flight>> SearchFlightsByAdvanceFilterAsync( decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops)
         {
             var query = _context.Flights
         .Include(f => f.Seats)
@@ -84,7 +84,7 @@ namespace Flight_Booking_project.Infrastructure.Repository
         .Include(f => f.Stops)
         .AsQueryable();
 
-
+        *//*
             query = query.Where(f => f.DepartureAirportId == departureAirportId && f.ArrivalAirportId == arrivalAirportId);
 
             // Filter by class type and availability of seats
@@ -93,7 +93,7 @@ namespace Flight_Booking_project.Infrastructure.Repository
                 query = query.Where(f => f.Seats.Any(s => s.ClassType == classType && s.IsAvailable));
             }
 
-          
+          *//*
 
 
             // Filter by minimum price
@@ -124,7 +124,7 @@ namespace Flight_Booking_project.Infrastructure.Repository
   
             return await query.ToListAsync();
 
-        }
+        }*/
     }
 
 }
