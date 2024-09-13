@@ -18,7 +18,5 @@ namespace Flight_Booking_project.Domain.Entities
         public ICollection<Flight> Flights { get; set; }
 
         public ICollection<Airport> Airports { get; set; }
-
-
     }
 }
