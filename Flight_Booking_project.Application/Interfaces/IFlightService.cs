@@ -13,7 +13,7 @@ namespace Flight_Booking_project.Application.Interfaces
     {
         Task<FlightDetailsResponseDto> GetFlightByIdAsync(int flightId);
         Task<List<FlightResponseDto>> SearchFlightsAsync(string DepartureAirportName, string ArrivalAirportName, string ClassType, DateTime DepartureDate, int NumberOfPassengers);
-        Task<List<FlightResponseDto>> SearchFlightsByAdvanceFilterAsync(decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops);
+       /* Task<List<FlightResponseDto>> SearchFlightsByAdvanceFilterAsync(decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops);*/
     }
 
 }

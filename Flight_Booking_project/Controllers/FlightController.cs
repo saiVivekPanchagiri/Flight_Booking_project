@@ -17,7 +17,7 @@ namespace Flight_Booking_project.Controllers
         }
 
         [HttpGet("Basicsearch")]
-        public async Task<IActionResult> SearchFlights([FromQuery] string DepartureAirportName, string ArrivalAirportName, string ClassType, DateTime DepartureDate, int NumberOfPassengers)
+        public async Task<IActionResult> SearchFlights([FromQuery] string DepartureAirportName,[FromQuery] string ArrivalAirportName, [FromQuery] string ClassType, [FromQuery] DateTime DepartureDate, [FromQuery] int NumberOfPassengers)
         {
             try
             {
@@ -29,8 +29,8 @@ namespace Flight_Booking_project.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-        [HttpGet("AdvanceFilterSearch")]
-        public async Task<IActionResult> SearchFlightsByAdvanceFilter( [FromQuery]decimal? MinPrice, decimal? MaxPrice, string? AirlineName, int? NumberOfStops)
+       /* [HttpGet("AdvanceFilterSearch")]
+        public async Task<IActionResult> SearchFlightsByAdvanceFilter( [FromQuery]decimal? MinPrice, [FromQuery] decimal? MaxPrice, [FromQuery] string? AirlineName, [FromQuery] int? NumberOfStops)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Flight_Booking_project.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
-        }
+        }*/
 
 
         [HttpGet("{flightId}")]
