@@ -19,15 +19,13 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
-    
-
+   
     public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper )
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _mapper = mapper;
     }
-
     public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
     {
         var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
