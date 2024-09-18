@@ -61,9 +61,12 @@ namespace Flight_Booking_project.Domain.EntitiesDto
                 .ForMember(dest => dest.Seats, opt => opt.Ignore()) // Seats are not mapped directly in search
                 .ForMember(dest => dest.Airline, opt => opt.Ignore()); // Airline is handled similarly in the service
 
-            CreateMap<RegisterDto, User>()
-             .ForMember(dest => dest.AlternativeContactNumber, opt => opt.AllowNull()); // Allow null values
-            CreateMap<User, UserDto>();
+
+            CreateMap<User, UserDto>().ReverseMap();
+
+            CreateMap<User, RegisterDto>().ReverseMap();
+
+
         }
     }
 }
