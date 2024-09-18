@@ -13,6 +13,7 @@ using Flight_Booking_project.Domain.Entities;
 using Flight_Booking_project.Application.Interfaces;
 using Flight_Booking_project.Domain.EntitiesDto.ResponseDto;
 using Flight_Booking_project.Domain.EntitiesDto.RequestDto;
+using Flight_Booking_project.Application.IRepository;
 
 namespace FlightBookingSystem.Application.Services
 {
@@ -21,12 +22,14 @@ namespace FlightBookingSystem.Application.Services
         private readonly IBookingRepository _bookingRepository;
         private readonly IBookingByFlightRepository _flightRepository;
         private readonly IMapper _mapper;
+        private readonly IFlightRepository _flightRepository;
 
         decimal totalSeatPrice = 0;
         decimal totalPassengerPrice = 0;
         decimal refundAmount = 0;
 
         public BookingService(IBookingRepository bookingRepository, IBookingByFlightRepository flightRepository, IMapper mapper)
+        public BookingService(IBookingRepository bookingRepository, IFlightRepository flightRepository)
         {
             _bookingRepository = bookingRepository;
             _flightRepository = flightRepository;
@@ -56,27 +59,32 @@ namespace FlightBookingSystem.Application.Services
 
             var seatPrices = seats.ToDictionary(s => s.SeatNumber, s => s.Price);
 
-
-            //decimal totalSeatPrice = 0;
-            //decimal totalPassengerPrice = 0;
+            
+            decimal totalSeatPrice = 0;
+            decimal totalPassengerPrice = 0;
             foreach (var seatBooking in bookingRequestDto.SeatBookings)
             {
                 if (seatPrices.TryGetValue(seatBooking.SeatNumber, out var seatPrice))
                 {
-
+                    
                     totalSeatPrice += CalculatePrice(seatPrice, seatBooking.ClassType, seatBooking.Position);
                     foreach (var passenger in bookingRequestDto.Passengers)
                     {
-
-                        totalPassengerPrice += CalculatePassengerPrice(totalSeatPrice, passenger);
+                       
+                        totalPassengerPrice += CalculatePassengerPrice(seatPrice,passenger);
                     }
                 }
             }
+
+           
+           
+
+
             var booking = new Booking
             {
                 FlightId = flight.FlightId,
                 UserId = bookingRequestDto.UserId,
-                IsPaid = bookingRequestDto.IsPaid,
+                IsPaid=bookingRequestDto.IsPaid,
                 Passengers = bookingRequestDto.Passengers.Select(p => new Passenger
                 {
                     FirstName = p.FirstName,
@@ -223,6 +231,7 @@ namespace FlightBookingSystem.Application.Services
         {
             decimal priceMultiplier = 1;
 
+            
             switch (classType)
             {
                 case "Economy":
@@ -235,33 +244,31 @@ namespace FlightBookingSystem.Application.Services
                     priceMultiplier = 300;
                     break;
             }
-            /*
             if (position == "Front")
             {
-                priceMultiplier += 100;
+                priceMultiplier += 100; 
             }
             else if (position == "Middle")
             {
-                priceMultiplier += 100;
+                priceMultiplier += 100; 
             }
             else if (position == "Back")
             {
-                priceMultiplier += 100;
+                priceMultiplier += 100; 
             }
             */
 
-            return basePrice + priceMultiplier;
         }
 
-        private decimal CalculatePassengerPrice(decimal basePrice, PassengerRequestDto passenger)
         {
+
+
+
             if (passenger.Age < 12)
             {
-                return basePrice * 0.1m;
             }
             else if (passenger.Age >= 65)
             {
-                return basePrice * 0.2m;
             }
             else
             {
@@ -270,8 +277,6 @@ namespace FlightBookingSystem.Application.Services
         }
     }
 }
-
-
 
 
 

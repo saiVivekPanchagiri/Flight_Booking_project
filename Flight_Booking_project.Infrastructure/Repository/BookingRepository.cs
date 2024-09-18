@@ -32,15 +32,15 @@ namespace FlightBookingSystem.Infrastructure
             {
                 try
                 {
-                    await _context.Bookings.AddAsync(booking);
-                    await _context.SaveChangesAsync();
+            await _context.Bookings.AddAsync(booking);
+            await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    return booking;
-                }
+            return booking;
+        }
                 catch (Exception ex)
                 {
-                    
+
                     await transaction.RollbackAsync();
                     throw;
                     
@@ -62,11 +62,11 @@ namespace FlightBookingSystem.Infrastructure
             {
                 try
                 {
-                    await _context.Passengers.AddAsync(passenger);
-                    await _context.SaveChangesAsync();
+            await _context.Passengers.AddAsync(passenger);
+            await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-                    return passenger;
-                }
+            return passenger;
+        }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
@@ -159,6 +159,6 @@ namespace FlightBookingSystem.Infrastructure
 
 
         // Fetch the updated booking details after a passenger is deleted
-       
+
     }
 }

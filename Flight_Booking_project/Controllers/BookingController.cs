@@ -82,7 +82,7 @@ namespace Flight_Booking_project.Controllers
                     Message = bookingResult.Message
                 });
             }
-            
+
             var response = new BookingResponseDto
             {
                 IsSuccess = bookingResult.IsSuccess,

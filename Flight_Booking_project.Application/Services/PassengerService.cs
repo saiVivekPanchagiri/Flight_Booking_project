@@ -41,7 +41,7 @@ namespace Flight_Booking_project.Application.Services
                 Message = "Passenger deleted successfully."
             };
         }
-
+        
         public async Task<BookingResponseDto> DeletePassengersByBookingIdAsync(int bookingId)
         {
             var success = await _repository.DeletePassengersByBookingIdAsync(bookingId);
