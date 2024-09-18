@@ -19,15 +19,13 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
-    
-
+   
     public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper )
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _mapper = mapper;
     }
-
     public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
     {
         var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
@@ -71,11 +69,16 @@ public class UserService : IUserService
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], null,
-            expires: DateTime.Now.AddMinutes(10),
+            expires: DateTime.Now.AddMinutes(1),
+
+  
+
             signingCredentials: credentials
-            );
+        );
+
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
 
     public async Task<string> LoginAsync(UserDto user)
     {
