@@ -51,7 +51,6 @@ namespace Flight_Booking_project.Domain.EntitiesDto
 
 
 
-
             // Mapping from FlightSearchRequestDto to Flight entity
             CreateMap<FlightBasicSearchRequestDto, Flight>()
                 // We don't directly map these string fields to the Flight entity
