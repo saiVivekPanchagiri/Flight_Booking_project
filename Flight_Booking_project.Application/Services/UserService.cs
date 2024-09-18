@@ -71,7 +71,7 @@ public class UserService : IUserService
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], null,
-            expires: DateTime.Now.AddMinutes(10),
+            expires: DateTime.Now.AddMinutes(1),
             signingCredentials: credentials
             );
         return new JwtSecurityTokenHandler().WriteToken(token);
