@@ -14,6 +14,6 @@ namespace Flight_Booking_project.Domain.EntitiesDto
         public long PhoneNumber { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }
-        public long AlternativeContactNumber { get; set; }
+        public long? AlternativeContactNumber { get; set; }
     }
 }

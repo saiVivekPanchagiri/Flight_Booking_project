@@ -1,7 +1,7 @@
 using Flight_Booking_project.Application.Interfaces;
 using Flight_Booking_project.Application.IRepository;
 using Flight_Booking_project.Application.Services;
-using Flight_Booking_project.Domain.AutoMapper;
+//using Flight_Booking_project.Domain.FlightProfile.FlightProfile;
 using Flight_Booking_project.Domain.EntitiesDto;
 using Flight_Booking_project.Infrastructure.Data;
 using Flight_Booking_project.Infrastructure.Repository;
@@ -13,13 +13,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Entity Framework Core
-builder.Services.AddDbContext<FlightBookingContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EFCoreDBConnection"),
-    b => b.MigrationsAssembly("Flight_Booking_project")));
-
 // Configure AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -39,7 +34,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<FlightBookingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("EFCoreDBConnection"),b=>b.MigrationsAssembly("Flight_Booking_project")));
-builder.Services.AddAutoMapper(typeof(FlightProfile).Assembly);
+
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IAirportService, AirportService>();

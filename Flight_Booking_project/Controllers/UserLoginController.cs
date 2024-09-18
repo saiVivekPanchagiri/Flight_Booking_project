@@ -14,13 +14,12 @@ using System.Threading.Tasks;
 public class UserLoginController : ControllerBase
 {
     private readonly IUserService _userService;
-
     public UserLoginController(IUserService userService)
     {
         _userService = userService;
     }
 
-    [HttpPost("register")]
+    [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
         try
@@ -36,7 +35,7 @@ public class UserLoginController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost]
-    [Route("login")]
+    [Route("Login")]
     public async Task<IActionResult> Login([FromBody] UserDto userDto)
     {
         if (userDto == null)
@@ -50,6 +49,24 @@ public class UserLoginController : ControllerBase
             return Ok(new { token });
         }
         return Unauthorized("Invalid username or password.");
+    }
+
+    [HttpGet("UserByEmail")]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+    {
+        if (string.IsNullOrEmpty(email))
+        {
+            return BadRequest("Email is required."); // Return 400 Bad Request if the email is not provided
+        }
+
+        var userDto = new RegisterDto { Email = email }; // Create UserDto with the email
+        var user = await _userService.GetUserByEmail(userDto);
+
+        if (user == null)
+        {
+            return NotFound(); // Return 404 Not Found if the user is not found
+        }
+        return Ok(user); // Return 200 OK with the user data
     }
 }
 

@@ -12,5 +12,6 @@ namespace Flight_Booking_project.Application.Interfaces
     {
         Task<UserDto> RegisterAsync(RegisterDto registerDto);
         Task<string> LoginAsync(UserDto userDto);
+        Task<RegisterDto> GetUserByEmail(RegisterDto registerDto);
     }
 }
