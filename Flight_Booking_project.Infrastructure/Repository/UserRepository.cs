@@ -21,17 +21,17 @@ namespace Flight_Booking_project.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<User> GetByEmailAsync(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<User> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User> AddAsync(User user)
+        public async Task<User> RegisterUserAsync(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

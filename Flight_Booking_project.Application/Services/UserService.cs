@@ -19,18 +19,16 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
-    
-
+   
     public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper )
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _mapper = mapper;
     }
-
     public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
     {
-        var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
+        var existingUser = await _userRepository.GetUserByEmailAsync(registerDto.Email);
         if (existingUser != null)
         {
             throw new Exception("User already exists");
@@ -38,8 +36,7 @@ public class UserService : IUserService
 
         var user = _mapper.Map<User>(registerDto);
         
-
-        await _userRepository.AddAsync(user);
+        await _userRepository.RegisterUserAsync(user);
 
         return _mapper.Map<UserDto>(user);
     }
@@ -50,7 +47,7 @@ public class UserService : IUserService
 
         try
         {
-            var userVal = await _userRepository.GetByEmailAsync(user.Email);
+            var userVal = await _userRepository.GetUserByEmailAsync(user.Email);
 
             if (userVal != null && (user.Email == userVal.Email && user.Password == userVal.Password))
             {
@@ -61,7 +58,6 @@ public class UserService : IUserService
         {
             return _user;
         }
-
         return _user;
     }
 
@@ -70,12 +66,23 @@ public class UserService : IUserService
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], null,
-            expires: DateTime.Now.AddMinutes(1),
+        var claims = new[]
+        {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+        var token = new JwtSecurityToken(
+            _configuration["Jwt:Issuer"],
+            _configuration["Jwt:Audience"],
+            claims,
+            expires: DateTime.Now.AddMinutes(30),
             signingCredentials: credentials
-            );
+        );
+
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
 
     public async Task<string> LoginAsync(UserDto user)
     {
@@ -93,6 +100,33 @@ public class UserService : IUserService
             return token;
         }
         return token;
+    }
+
+    public async Task<RegisterDto> GetUserByEmail(RegisterDto registerDto)
+    {
+        if (string.IsNullOrEmpty(registerDto.Email))
+        {
+            return null; // Or handle as appropriate for invalid email
+        }
+
+        var user = await _userRepository.GetUserByEmailAsync(registerDto.Email); // Fetch user from repository
+
+        if (user == null)
+        {
+            return null; // Or handle as appropriate for not found
+        }
+
+        // Map User entity to UserDto
+        return new RegisterDto
+        {
+            Name = user.Name,    
+            Email = user.Email,
+            Password = user.Password,
+            Address = user.Address,
+            PhoneNumber = user.PhoneNumber, 
+            Gender = user.Gender,
+            AlternativeContactNumber = user.AlternativeContactNumber
+        };
     }
 }
 
