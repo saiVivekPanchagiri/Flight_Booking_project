@@ -43,7 +43,7 @@ namespace Flight_Booking_project.Domain.EntitiesDto
                 })))
                 .ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats.Select(seat => new SeatDetailsDto
                 {
-                    //SeatNumber = seat.SeatNumber,
+                    SeatNumber=seat.SeatNumber,
                     SeatClass = seat.ClassType,
                     SeatPosition = seat.Position,
                     Price = seat.Price

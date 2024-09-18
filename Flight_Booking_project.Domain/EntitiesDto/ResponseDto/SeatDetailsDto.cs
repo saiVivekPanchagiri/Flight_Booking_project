@@ -9,6 +9,7 @@ namespace Flight_Booking_project.Domain.EntitiesDto.ResponseDto
 
     public class SeatDetailsDto
     {
+        public string SeatNumber { get; set; }
         public string SeatClass { get; set; }
         public string SeatPosition { get; set; }
         public decimal Price { get; set; }
