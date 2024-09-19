@@ -64,6 +64,20 @@ namespace Flight_Booking_project.Domain.EntitiesDto
             CreateMap<RegisterDto, User>()
              .ForMember(dest => dest.AlternativeContactNumber, opt => opt.AllowNull()); // Allow null values
             CreateMap<User, UserDto>();
+
+            CreateMap<BookingRequestDto, Booking>()
+              .ForMember(dest => dest.Passengers, opt => opt.MapFrom(src => src.Passengers));
+
+            CreateMap<PassengerRequestDto, Passenger>();
+            CreateMap<SeatBookingDto, Seat>()
+                .ForMember(dest => dest.SeatNumber, opt => opt.MapFrom(src => src.SeatNumber));
+
+            // Domain Model to DTO
+            CreateMap<Booking, BookingDetailsDto>()
+                .ForMember(dest => dest.Passengers, opt => opt.MapFrom(src => src.Passengers));
+
+            CreateMap<Passenger, PassengerDto>();
+            CreateMap<Seat, SeatDto>();
         }
     }
 }
