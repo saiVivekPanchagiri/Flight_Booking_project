@@ -4,6 +4,9 @@ using Flight_Booking_project.Application.Services;
 using Flight_Booking_project.Domain.EntitiesDto;
 using Flight_Booking_project.Infrastructure.Data;
 using Flight_Booking_project.Infrastructure.Repository;
+using FlightBookingSystem.Application.Repository;
+using FlightBookingSystem.Application.Services;
+using FlightBookingSystem.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -43,6 +46,12 @@ builder.Services.AddScoped<IAirportService, AirportService>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
+builder.Services.AddScoped<IPassengerService, PassengerService>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IBookingByFlightRepository, BookingByFlightRepository>();
 /*builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
