@@ -12,11 +12,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Entity Framework Core
-builder.Services.AddDbContext<FlightBookingContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EFCoreDBConnection"),
-    b => b.MigrationsAssembly("Flight_Booking_project")));
-
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
+using Flight_Booking_project.Domain.EntitiesDto.ResponseDto;
 
 public class UserService : IUserService
 {
@@ -41,24 +42,24 @@ public class UserService : IUserService
         return _mapper.Map<UserDto>(user);
     }
 
-    private async Task<UserDto> AuthenticateUser(UserDto user)
+    private async Task<User> AuthenticateUser(UserDto user)
     {
-        UserDto _user = null;
+        User authenticatedUser = null;
 
         try
         {
-            var userVal = await _userRepository.GetUserByEmailAsync(user.Email);
+            var userEntity = await _userRepository.GetUserByEmailAsync(user.Email);
 
-            if (userVal != null && (user.Email == userVal.Email && user.Password == userVal.Password))
+            if (userEntity != null && user.Password == userEntity.Password) // Ensure to compare passwords securely
             {
-                _user = user;
+                authenticatedUser = userEntity; // Return User entity
             }
         }
         catch (Exception ex)
         {
-            return _user;
+            // Handle exception (optional)
         }
-        return _user;
+        return authenticatedUser; // Return User entity
     }
 
     private async Task<string> GenerateToken(UserDto user)
@@ -84,24 +85,30 @@ public class UserService : IUserService
     }
 
 
-    public async Task<string> LoginAsync(UserDto user)
+    public async Task<LoginResultDto> LoginAsync(UserDto user)
     {
-        var token = "";
+        LoginResultDto loginResult = null;
+
         try
         {
-            var _user = await AuthenticateUser(user);
-            if (_user != null)
+            var authenticatedUser = await AuthenticateUser(user);
+            if (authenticatedUser != null)
             {
-                token = await GenerateToken(user);
+                var token = await GenerateToken(new UserDto { Email = authenticatedUser.Email });
+                loginResult = new LoginResultDto
+                {
+                    Token = token,
+                    UserId = authenticatedUser.UserId // Get UserId from authenticatedUser
+                };
             }
         }
         catch (Exception e)
         {
-            return token;
+            // Handle the exception (optional)
         }
-        return token;
-    }
 
+        return loginResult; // Return LoginResultDto
+    }
     public async Task<RegisterDto> GetUserByEmail(RegisterDto registerDto)
     {
         if (string.IsNullOrEmpty(registerDto.Email))

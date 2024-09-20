@@ -2,6 +2,7 @@
 using Flight_Booking_project.Application.Interfaces;
 using Flight_Booking_project.Domain.Entities;
 using Flight_Booking_project.Domain.EntitiesDto;
+using Flight_Booking_project.Domain.EntitiesDto.ResponseDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -34,20 +35,21 @@ public class UserLoginController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost]
-    [Route("Login")]
-    public async Task<IActionResult> Login([FromBody] UserDto userDto)
+    [HttpPost("Login")]
+    public async Task<ActionResult<LoginResultDto>> Login([FromBody] UserDto userDto)
     {
         if (userDto == null)
         {
             return BadRequest("UserDto cannot be null.");
         }
-        var token = await _userService.LoginAsync(userDto);
 
-        if (!string.IsNullOrEmpty(token))
+        var loginResult = await _userService.LoginAsync(userDto);
+
+        if (loginResult != null)
         {
-            return Ok(new { token });
+            return Ok(loginResult); // Return LoginResultDto in the response
         }
+
         return Unauthorized("Invalid username or password.");
     }
 

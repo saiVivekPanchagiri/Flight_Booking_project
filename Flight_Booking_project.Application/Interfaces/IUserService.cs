@@ -1,5 +1,6 @@
 ﻿using Flight_Booking_project.Domain.Entities;
 using Flight_Booking_project.Domain.EntitiesDto;
+using Flight_Booking_project.Domain.EntitiesDto.ResponseDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Flight_Booking_project.Application.Interfaces
     public interface IUserService
     {
         Task<UserDto> RegisterAsync(RegisterDto registerDto);
-        Task<string> LoginAsync(UserDto userDto);
+        Task<LoginResultDto> LoginAsync(UserDto user);
         Task<RegisterDto> GetUserByEmail(RegisterDto registerDto);
     }
 }

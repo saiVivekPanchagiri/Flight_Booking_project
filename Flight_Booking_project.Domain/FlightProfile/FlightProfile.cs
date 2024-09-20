@@ -61,9 +61,11 @@ namespace Flight_Booking_project.Domain.EntitiesDto
                 .ForMember(dest => dest.Airline, opt => opt.Ignore()); // Airline is handled similarly in the service
 
 
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<RegisterDto, User>()
 
-            CreateMap<User, RegisterDto>().ReverseMap();
+          .ForMember(dest => dest.AlternativeContactNumber, opt => opt.AllowNull()); // Allow null values
+
+            CreateMap<User, UserDto>();
 
 
         }
